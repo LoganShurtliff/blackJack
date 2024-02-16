@@ -14,9 +14,19 @@ buttonDeal.addEventListener('click', () => {
     Deal();
 });
 
+buttonHit.addEventListener('click', () => {
+    Hit();
+});
+
+buttonHold.addEventListener('click', () => {
+    Hold();
+});
+
 
 let playerHand = [];
 let dealerHand = [];
+let dealerWins = 0;
+let playerWins = 0;
 
 //Full deck of 52 playing cards
 const initialDeck = [
@@ -91,18 +101,9 @@ const checkAces = hand => {
     }
 };
 
-buttonHit.addEventListener('click', () => {
-    Hit(playerHand, dealerHand);
-});
-
-buttonHold.addEventListener('click', () => {
-    Hold();
-});
 
 //Initializes the game
 const Deal = () => {
-    console.clear();
-    
     shuffledDeck = shuffleDeck(initialDeck);
     deckPosition = 0;
 
@@ -119,8 +120,6 @@ const Deal = () => {
 
 //updates the UI
 const updateUI = () => {
-    console.log("Update UI");
-
     dealerDiv.innerHTML = '';
     playerDiv.innerHTML = '';
     
@@ -147,8 +146,6 @@ const updateUI = () => {
 };
 
 const bust = () => {
-    console.log("bust");
-    
     playerDiv.innerHTML = "";
     dealerDiv.innerHTML = "";
 
@@ -172,7 +169,6 @@ const calcScore = hand => {
 
         let possibleScores = formatPossibilities(aceCount, total);
         let validScores = possibleScores.filter(score => score <= 21);
-        console.log(validScores);
         return validScores;
     } else {
         let total = 0;
@@ -181,7 +177,6 @@ const calcScore = hand => {
         });
         let possibleScores = [total];
         let validScores = possibleScores.filter(score => score <= 21);
-        console.log(validScores);
         return validScores;
     }
 };
@@ -226,4 +221,44 @@ const Hit = () => {
     deckPosition++;
 
     updateUI();
+}
+
+const dealerHit = () => {
+    dealerHand.push(shuffledDeck[deckPosition]);
+    deckPosition++;
+}
+
+const Hold = () => {
+    let dealerScore = calcScore(dealerHand);
+    let playerScore = calcScore(playerHand);
+
+    //Deals cards to the dealer until something happens
+    let continueLoop = true;
+    while (continueLoop)
+    {
+        continueLoop = false;
+        
+        dealerHit();
+        dealerScore = calcScore(dealerHand);
+
+        if (dealerScore[dealerScore.length - 1] < 17) {
+            continueLoop = true;
+        }else if (dealerScore.length == 2 && dealerScore[dealerScore.length - 1] < 18) {
+            continueLoop = true;
+        } else if (dealerScore[dealerScore.length - 1] < playerScore[playerScore.length - 1]) {
+            continueLoop = true;
+        }
+    }
+
+    updateUI();
+
+    //Check who wins
+}
+
+const playerWin = () => {
+
+}
+
+const dealerWin = () => {
+
 }
