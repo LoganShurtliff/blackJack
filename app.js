@@ -15,7 +15,8 @@ buttonDeal.addEventListener('click', () => {
 });
 
 
-
+let playerHand = [];
+let dealerHand = [];
 
 //Full deck of 52 playing cards
 const initialDeck = [
@@ -90,53 +91,75 @@ const checkAces = hand => {
     }
 };
 
+buttonHit.addEventListener('click', () => {
+    Hit(playerHand, dealerHand);
+});
+
+buttonHold.addEventListener('click', () => {
+    Hold();
+});
 
 //Initializes the game
 const Deal = () => {
+    console.clear();
+    
     shuffledDeck = shuffleDeck(initialDeck);
     deckPosition = 0;
 
-    let dealerHand = [shuffledDeck[deckPosition]];
-    let playerHand = [shuffledDeck[deckPosition + 1], shuffledDeck[deckPosition + 2]]
+    dealerHand = [shuffledDeck[deckPosition]];
+    playerHand = [shuffledDeck[deckPosition + 1], shuffledDeck[deckPosition + 2]]
 
-    updateUI(dealerHand, playerHand);
+    updateUI();
 
     buttonHit.classList.remove('hidden');
     buttonHold.classList.remove('hidden');
-
-
-    buttonHit.addEventListener('click', () => {
-        Hit(playerHand, dealerHand);
-    });
-
-    buttonHold.addEventListener('click', () => {
-        Hold();
-    });
-
 
     deckPosition += 3;
 };
 
 //updates the UI
-const updateUI = (dealer, player) => {
+const updateUI = () => {
+    console.log("Update UI");
+
     dealerDiv.innerHTML = '';
     playerDiv.innerHTML = '';
     
-    dealer.forEach(card => {
+    dealerHand.forEach(card => {
         let html = `<img src="imgs/${card}.svg">`;
         dealerDiv.innerHTML += html;
     });
 
-    player.forEach(card => {
+    playerHand.forEach(card => {
         let html = `<img src="imgs/${card}.svg">`;
         playerDiv.innerHTML += html;
     });
 
-    playerScoreP.textContent = `Player score = ${calcScore(player)}`;
-    dealerScoreP.textContent = `Dealer score = ${calcScore(dealer)}`;
+    let playerScore = calcScore(playerHand);
+    let dealerScore = calcScore(dealerHand);
+
+    playerScoreP.textContent = `Player score = ${playerScore}`;
+    dealerScoreP.textContent = `Dealer score = ${dealerScore}`;
+
+    if (playerScore.length == 0)
+    {
+        bust();
+    }
 };
 
-// returns either the score, or an array of possible scores (if aces are involved)
+const bust = () => {
+    console.log("bust");
+    
+    playerDiv.innerHTML = "";
+    dealerDiv.innerHTML = "";
+
+    buttonHold.classList.add('hidden');
+    buttonHit.classList.add('hidden');
+
+    playerScoreP.textContent = "";
+    dealerScoreP.textContent = "You went bust";
+}
+
+// returns an array of possible scores
 const calcScore = hand => {
     if (!(checkAces(hand) == null)) {
         let total = 0;
@@ -148,13 +171,18 @@ const calcScore = hand => {
         });
 
         let possibleScores = formatPossibilities(aceCount, total);
-        return possibleScores;
+        let validScores = possibleScores.filter(score => score <= 21);
+        console.log(validScores);
+        return validScores;
     } else {
         let total = 0;
         hand.forEach(card => {
             total += checkValue(card);
         });
-        return total;
+        let possibleScores = [total];
+        let validScores = possibleScores.filter(score => score <= 21);
+        console.log(validScores);
+        return validScores;
     }
 };
 
@@ -193,13 +221,9 @@ const formatPossibilities = (Count, total) => {
     return posssibilities;
 };
 
-const Hit = (who, other) => {
-    who.push(shuffledDeck[deckPosition]);
+const Hit = () => {
+    playerHand.push(shuffledDeck[deckPosition]);
     deckPosition++;
 
-    if (who.length == 1) {
-        updateUI(who, other);
-    } else {
-        updateUI(other, who);
-    }
+    updateUI();
 }
