@@ -7,6 +7,8 @@ const playerDiv = document.querySelector('.player');
 const dealerDiv = document.querySelector('.dealer');
 const playerScoreP = document.querySelector('.playerScore');
 const dealerScoreP = document.querySelector('.dealerScore');
+const textPWins = document.querySelector('.playerwins');
+const textDWins = document.querySelector('.dealerwins');
 
 
 //Event Listeners for all the buttons
@@ -146,14 +148,14 @@ const updateUI = () => {
 };
 
 const bust = () => {
-    playerDiv.innerHTML = "";
-    dealerDiv.innerHTML = "";
 
     buttonHold.classList.add('hidden');
     buttonHit.classList.add('hidden');
 
     playerScoreP.textContent = "";
     dealerScoreP.textContent = "You went bust";
+
+    dealerWin();
 }
 
 // returns an array of possible scores
@@ -216,6 +218,7 @@ const formatPossibilities = (Count, total) => {
     return posssibilities;
 };
 
+//Adds card to the player's hand
 const Hit = () => {
     playerHand.push(shuffledDeck[deckPosition]);
     deckPosition++;
@@ -223,11 +226,13 @@ const Hit = () => {
     updateUI();
 }
 
+//Adds card to the dealer's hand
 const dealerHit = () => {
     dealerHand.push(shuffledDeck[deckPosition]);
     deckPosition++;
 }
 
+//When the hold button is pressed
 const Hold = () => {
     let dealerScore = calcScore(dealerHand);
     let playerScore = calcScore(playerHand);
@@ -252,13 +257,37 @@ const Hold = () => {
 
     updateUI();
 
-    //Check who wins
+    if (dealerScore.length == 0) { //If the dealer went over 21 and has no valid scores
+        playerWin();
+    } else if (dealerScore[dealerScore.length - 1] > playerScore[playerScore.length - 1]) {
+        dealerWin();
+    } else {
+        playerWin();
+    }
 }
 
 const playerWin = () => {
+    playerWins++;
 
+    buttonHold.classList.add('hidden');
+    buttonHit.classList.add('hidden');
+
+    playerScoreP.textContent = "";
+    dealerScoreP.textContent = "You won!";
+
+    textPWins.textContent = playerWins;
+    textDWins.textContent = dealerWins;
 }
 
 const dealerWin = () => {
+    dealerWins++;
+    
+    buttonHold.classList.add('hidden');
+    buttonHit.classList.add('hidden');
 
+    playerScoreP.textContent = "";
+    dealerScoreP.textContent = "You lost.";
+
+    textPWins.textContent = playerWins;
+    textDWins.textContent = dealerWins;
 }
