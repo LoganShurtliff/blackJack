@@ -1,27 +1,29 @@
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css" />
     <title>Black Jack</title>
-</head>
-<body>
-    <div>
-        <h1>BlackJack</h1>
-        <button id = "deal">Deal</button>
-        
-        <p class = "dealerScore"></p>
-        <div class = "dealer"></div>
-        <div class = "player"></div>
-        <p class = "playerScore"></p>
+  </head>
+  <body>
+    <div class="wrapper">
+      <h1>BlackJack</h1>
+      <div class="button" id="deal">Deal</div>
 
-        <button class = "hidden" id = 'hit'>Hit</button>
-        <button class = "hidden" id = 'hold'>Hold</button>
+      <p class="dealerScore hidden"></p>
+      <div class="dealer"></div>
+      <div class="player"></div>
+      <p class="playerScore hidden"></p>
 
+      <div class="btnContainer">
+        <div class="hidden button" id="hit">Hit</div>
+        <div class="hidden button" id="hold">Hold</div>
+      </div>
 
-        <p>Player Wins : <strong class="playerwins">0</strong></p>
-        <p>Dealer Wins : <strong class="dealerwins">0</strong></p>
-        <script src="app.js"></script>
+      <p>Player Wins : <strong class="playerwins">0</strong></p>
+      <p>Dealer Wins : <strong class="dealerwins">0</strong></p>
     </div>
-</body>
+
+    <script src="app.js"></script>
+  </body>
 </html>
